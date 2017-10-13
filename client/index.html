@@ -57,17 +57,22 @@
         }
         
         const drawSquare = () => {
-            let xCord = Math.floor(Math.random() * 400);
-            let yCord = Math.floor(Math.random() * 400);
-            let coords = {x: xCord, y: yCord, width: 25, height: 25, color: "red"};
             
-            socket.emit('draw', coords);
+            let drawData = [];
+            
+            for (let i = 0; i < users; i++){
+                let xCord = Math.floor(Math.random() * 400);
+                let yCord = Math.floor(Math.random() * 400);
+                let coords = {x: xCord, y: yCord, width: 25, height: 25, color: "red"};
+                drawData.push(coords);
+            }
+            
+            socket.emit('draw', drawData);
         }
         
         const setupSocket = () => {
             socket.on('updateCanvas', (data) => {
-                draws = [];
-                draws.push(data);
+                draws = data;
                 draw();
             });
             
@@ -101,13 +106,17 @@
         const checkCollision = (e) => {
                      
             var mouse = getMouse(e);
-                        
-            // Checks if the mouse position is within the square
-            if(mouse.x > draws[0].x && mouse.x < draws[0].x + draws[0].width && mouse.y > draws[0].y && mouse.y < draws[0].y + draws[0].height){
-                score += 10;
-                scoreText.innerHTML = `Score: ${score}`;
-                drawSquare();
+            
+            for (let i = 0; i < users; i++){
+                
+                // Checks if the mouse position is within the square
+                if(mouse.x > draws[i].x && mouse.x < draws[i].x + draws[i].width && mouse.y > draws[i].y && mouse.y < draws[i].y + draws[i].height){
+                    score += 10;
+                    scoreText.innerHTML = `Score: ${score}`;
+                    drawSquare();
+                }
             }
+           
         }
           
         const readyUp = () => {
