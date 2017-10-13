@@ -1,5 +1,5 @@
 {
-  "name": "canvas-syncing-assignment-part2",
+  "name": "Websockets_App",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "socket.io": "^2.0.3"
   },
   "devDependencies": {
-    "eslint": "^4.7.2",
+    "eslint": "^4.8.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-import": "^2.7.0"
   },
@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PulpyPaul/canvas-syncing-assignment-part2.git"
+    "url": "git+https://github.com/PulpyPaul/Websockets_App.git"
   },
   "author": "Paul DeSimone",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/PulpyPaul/canvas-syncing-assignment-part2/issues"
+    "url": "https://github.com/PulpyPaul/Websockets_App/issues"
   },
-  "homepage": "https://github.com/PulpyPaul/canvas-syncing-assignment-part2#readme"
+  "homepage": "https://github.com/PulpyPaul/Websockets_App#readme"
 }
