@@ -18,6 +18,9 @@
         let ready = false;
         let readyCount = 0;
         let readyText;
+        let randomSquareCount = 20;
+        let pointSquareCount = 5;
+        let targetColor = "######";
         
 
         const init = () => {
@@ -43,33 +46,6 @@
             console.log("Loaded!");
         }
         
-        const draw = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            let keys = Object.keys(draws);
-            
-            for (let i = 0; i < keys.length; i++){
-                const drawCall = draws[keys[i]];
-                
-                ctx.fillStyle = drawCall.color;
-                ctx.fillRect(drawCall.x, drawCall.y, drawCall.width, drawCall.height);
-            }
-        }
-        
-        const drawSquare = () => {
-            
-            let drawData = [];
-            
-            for (let i = 0; i < users; i++){
-                let xCord = Math.floor(Math.random() * 400);
-                let yCord = Math.floor(Math.random() * 400);
-                let coords = {x: xCord, y: yCord, width: 25, height: 25, color: "red"};
-                drawData.push(coords);
-            }
-            
-            socket.emit('draw', drawData);
-        }
-        
         const setupSocket = () => {
             socket.on('updateCanvas', (data) => {
                 draws = data;
@@ -77,7 +53,8 @@
             });
             
             socket.on('startGame', () => {
-                drawSquare();
+                score = 0;
+                socket.emit('startRound');
             });
             
             socket.on('disconnection', (data) => {
@@ -101,19 +78,74 @@
                     socket.emit('beginGame');
                 }
             });
+            
+            socket.on('restartRound', (color) => {
+                targetColor = color;
+                createSquares(color);
+            });
         }
+        
+        const draw = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            let keys = Object.keys(draws);
+            
+            for (let i = 0; i < keys.length; i++){
+                const drawCall = draws[keys[i]];
+                
+                ctx.fillStyle = drawCall.color;
+                ctx.fillRect(drawCall.x, drawCall.y, drawCall.width, drawCall.height);
+            }
+        }
+        
+        const createSquares = (color) => {
+            
+            let drawData = [];
+            
+            for (let i = 0; i < randomSquareCount; i++){
+                let xCord = Math.floor(Math.random() * 400);
+                let yCord = Math.floor(Math.random() * 400);
+                let randomColor = getRandomColor();
+                let coords = {x: xCord, y: yCord, width: 25, height: 25, color: randomColor};
+                drawData.push(coords);
+            }
+            
+            for (let i = 0; i < pointSquareCount; i++){
+                let xCord = Math.floor(Math.random() * 400);
+                let yCord = Math.floor(Math.random() * 400);
+                let coords = {x: xCord, y: yCord, width: 25, height: 25, color: color};
+                drawData.push(coords);
+            }
+            
+            let tempSquare = {x: 0, y: 0, width: 25, height: 25, color: color};
+            drawData.push(tempSquare);
+            
+            socket.emit('draw', drawData);
+        }
+        
+        
         
         const checkCollision = (e) => {
                      
             var mouse = getMouse(e);
             
-            for (let i = 0; i < users; i++){
+            let keys = Object.keys(draws);
+            
+            for (let i = 0; i < keys.length; i++){
                 
                 // Checks if the mouse position is within the square
                 if(mouse.x > draws[i].x && mouse.x < draws[i].x + draws[i].width && mouse.y > draws[i].y && mouse.y < draws[i].y + draws[i].height){
-                    score += 10;
-                    scoreText.innerHTML = `Score: ${score}`;
-                    drawSquare();
+                    
+                    // Checks if the color is the target color
+                    if(draws[i].color == targetColor){
+                        score += 10;
+                        removeSquareAt(i);  // removes this square from the draw stack
+                        scoreText.innerHTML = `Score: ${score}`;
+                        return;
+                    } else {
+                        score -= 20;
+                        scoreText.innerHTML = `Score: ${score}`;
+                    }
                 }
             }
            
@@ -137,8 +169,27 @@
 		  mouse.y = e.pageY - e.target.offsetTop;
 		  return mouse;
 	    }
-
         
+        // https://stackoverflow.com/questions/1484506/random-color-generator
+        const getRandomColor = () => {
+            let letters = '0123456789ABCDEF';
+            let color = '#';
+            
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            
+            return color;
+        }
+        
+        const removeSquareAt = (index) => {
+            if (index > -1){
+                draws.splice(index, 1);
+            }
+            
+            socket.emit('draw', draws);
+        }
+
         window.onload = init;
     </script>
     <style>

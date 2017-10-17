@@ -44,6 +44,10 @@ const addObject = (sock) => {
     ready++;
     io.sockets.in('room1').emit('updateReadyStatus', ready);
   });
+    
+  socket.on('startRound', () => {
+     io.sockets.in('room1').emit('restartRound', getRandomColor()); 
+  });
 };
 
 io.sockets.on('connection', (socket) => {
@@ -55,4 +59,16 @@ io.sockets.on('connection', (socket) => {
   io.sockets.in('room1').emit('newConnection', users);
   addObject(socket);
 });
+
+// https://stackoverflow.com/questions/1484506/random-color-generator
+const getRandomColor = () => {
+    let letters = '0123456789ABCDEF';
+    let color = '#';
+            
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    
+    return color;
+}
 
