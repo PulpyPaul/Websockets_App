@@ -27,6 +27,7 @@
         let randomSquareCount = 20;
         let pointSquareCount = 5;
         let targetColor = "######";
+        let targetCircle;
         
 
         const init = () => {
@@ -40,6 +41,8 @@
             scoreText = document.querySelector("#scoreID");
             usersText = document.querySelector("#usersID");
             readyText = document.querySelector("#readyID");
+            targetCircle = document.querySelector("#targetColor");
+            
             ctx = canvas.getContext("2d");
             
             // Events
@@ -87,6 +90,7 @@
             
             socket.on('restartRound', (color) => {
                 targetColor = color;
+                targetCircle.style.backgroundColor = targetColor;
                 createSquares(color);
             });
         }
@@ -255,6 +259,12 @@
             display: block;
             text-align: center;
         }
+        
+        #targetColor {
+            width: 25px;
+            height: 25px;
+        }
+       
     </style>
 </head>
 <body>
@@ -278,6 +288,7 @@
                 <th id="usersID">Users: 0</th>
                 <th id="readyID">Users ready: 0 / 0</th>
                 <th id="scoreID">Score: 0</th>
+                <th>Target Color<div><a class="btn btn-floating btn-large pulse" id="targetColor"></a></div></th>
                 </tr>
             </thead>
          </table>
