@@ -155,9 +155,6 @@
                 drawData.push(coords);
             }
             
-            let tempSquare = {x: 0, y: 0, width: 25, height: 25, color: color};
-            drawData.push(tempSquare);
-            
             socket.emit('draw', drawData);
         }
         
@@ -180,7 +177,7 @@
                         removeSquareAt(i);  // removes this square from the draw stack
                         scoreText.innerHTML = `Score: ${score}`;
                         console.log(keys.length);
-                        if (keys.length <= 22 ){
+                        if (keys.length <= 21 ){
                             socket.emit('startRound');
                         }
                         return;
@@ -205,7 +202,7 @@
     </script>
     <style>
         canvas {
-            border: 1px solid black; 
+            border: 1px solid lightgray; 
             margin: auto; 
             margin-top: 10px;
             display: block;
