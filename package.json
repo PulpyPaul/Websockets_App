@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "express": "^4.16.2",
     "materialize-css": "^0.100.2",
     "socket.io": "^2.0.3"
   },
