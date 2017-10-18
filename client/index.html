@@ -29,7 +29,7 @@
         let targetColor = "######";
         let targetCircle;
         
-
+        // Initalizes variables
         const init = () => {
             
             // Connect socket
@@ -42,7 +42,6 @@
             usersText = document.querySelector("#usersID");
             readyText = document.querySelector("#readyID");
             targetCircle = document.querySelector("#targetColor");
-            
             ctx = canvas.getContext("2d");
             
             // Events
@@ -51,33 +50,38 @@
             
             // Sets up socket events
             setupSocket();
-            
-            console.log("Loaded!");
         }
         
+        // Hooks up socket events
         const setupSocket = () => {
+            
+            // Updates the canvas drawing data
             socket.on('updateCanvas', (data) => {
                 draws = data;
                 draw();
             });
             
+            // Resets score and starts the first round
             socket.on('startGame', () => {
                 score = 0;
                 socket.emit('startRound');
             });
             
+            // Adjusts number of users and ready count
             socket.on('disconnection', (data) => {
                 users = data;
                 ready = false;
                 usersText.innerHTML = `Users: ${users}`;
             });
             
+            // Updates number of users when a new user joins
             socket.on('newConnection', (data) => {
                 users = data;
                 usersText.innerHTML = `Users: ${users}`;
                 readyText.innerHTML = `Ready: ${readyCount} / ${users}`;
             });
             
+            // Updates the status of a user when they ready up
             socket.on('updateReadyStatus', (data) => {
                 readyCount = data;
                 readyText.innerHTML = `Ready: ${readyCount} / ${users}`;
@@ -88,6 +92,7 @@
                 }
             });
             
+            // Restarts the round of the game
             socket.on('restartRound', (color) => {
                 targetColor = color;
                 targetCircle.style.backgroundColor = targetColor;
@@ -95,7 +100,7 @@
             });
         }
         
-         // Taken from a previous assignment in Rich Media 1, gets mouse coordinates of canvas
+        // Taken from a previous assignment in Rich Media 1, gets mouse coordinates of canvas
         const getMouse = (e) => {
 		  var mouse = {};
 		  mouse.x = e.pageX - e.target.offsetLeft;
@@ -103,6 +108,7 @@
 		  return mouse;
 	    }
         
+        // Gets a random color
         // https://stackoverflow.com/questions/1484506/random-color-generator
         const getRandomColor = () => {
             let letters = '0123456789ABCDEF';
@@ -115,6 +121,7 @@
             return color;
         }
         
+        // Removes a square from the draw array at a given index
         const removeSquareAt = (index) => {
             if (index > -1){
                 draws.splice(index, 1);
@@ -122,7 +129,8 @@
             
             socket.emit('draw', draws);
         }
-
+        
+        // Draws the canvas data
         const draw = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
@@ -136,10 +144,13 @@
             }
         }
         
+        // Draws the squares to the screen
         const createSquares = (color) => {
             
+            // Reset data
             let drawData = [];
             
+            // Create 20 random colored squares
             for (let i = 0; i < randomSquareCount; i++){
                 let xCord = Math.floor(Math.random() * 400);
                 let yCord = Math.floor(Math.random() * 400);
@@ -148,6 +159,7 @@
                 drawData.push(coords);
             }
             
+            // Create 5 squares that match the target color
             for (let i = 0; i < pointSquareCount; i++){
                 let xCord = Math.floor(Math.random() * 400);
                 let yCord = Math.floor(Math.random() * 400);
@@ -158,12 +170,10 @@
             socket.emit('draw', drawData);
         }
         
-        
-        
+        // Checks if the user clicks on a square        
         const checkCollision = (e) => {
                      
             var mouse = getMouse(e);
-            
             let keys = Object.keys(draws);
             
             for (let i = 0; i < keys.length; i++){
@@ -186,7 +196,8 @@
             }
            
         }
-          
+        
+        // updates ready status when user clicks on button
         const readyUp = () => {
             if (ready) {
                 button.innerHTML = "Click Here to Ready!";
@@ -232,10 +243,6 @@
             display: block;
             text-align: center;
             text-shadow: 3px 2px 1px rgba(149, 150, 149, 1);
-        }
-        
-        body {
-            
         }
         
         th {
