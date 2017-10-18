@@ -1,5 +1,3 @@
-# Websockets Project - Lightning Clicks 
-
 This application is a simple reaction based game. Once all users ready up, a bunch of squares will be 
 drawn to the canvas. The user must click on the squares that match the target color to gain points. Once
 all squares of the correct color are clicked, a new round will begin.

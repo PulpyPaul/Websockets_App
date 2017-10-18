@@ -14,7 +14,7 @@ const index = fs.readFileSync(`${__dirname}/../client/index.html`);
 const onRequest = (request, response) => {
   const pathname = url.parse(request.url).pathname;
   const ext = path.extname(pathname);
-    
+
   // writes the file based on the file extensions to import all external sources
   if (ext) {
     if (ext === '.css') {
@@ -66,7 +66,6 @@ const addObject = (sock) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('disconnected!');
     users--;
     ready = 0;
     io.sockets.in('room1').emit('disconnection', users);
